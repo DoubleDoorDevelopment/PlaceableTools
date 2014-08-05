@@ -1,0 +1,20 @@
+{
+  "modinfoversion": 2,
+  "modlist": [{
+    "modid": "PlaceableTools",
+    "name": "PlaceableTools",
+    "description": "${description}",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/CCM-Modding/PlaceableTools",
+    "authors": [ "Dries007", "Claycorp" ],
+    "credits": "",
+    "logoFile": "PlaceableTools.png",
+    "requiredMods": [
+        "Forge"
+    ],
+    "dependencies": [
+    ],
+    "useDependencyInformation": "true"
+  }]
+}
