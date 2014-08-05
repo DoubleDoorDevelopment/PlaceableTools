@@ -107,24 +107,24 @@ uploadArchives {
                     project {
                         name project.archivesBaseName
                         packaging 'jar'
-                        description = project.description
-                        url 'https://github.com/' + project.githuborg + '/' + project.archivesBaseName
+                        description = description
+                        url 'https://github.com/' + githuborg + '/' + project.archivesBaseName
 
                         scm {
-                            url 'https://github.com/' + project.githuborg + '/' + project.archivesBaseName
-                            connection 'scm:git:git://github.com/' + project.githuborg + '/' + project.archivesBaseName + '.git'
-                            developerConnection 'scm:git:git@github.com:' + project.githuborg + '/' + project.archivesBaseName + '.git'
+                            url 'https://github.com/' + githuborg + '/' + project.archivesBaseName
+                            connection 'scm:git:git://github.com/' + githuborg + '/' + project.archivesBaseName + '.git'
+                            developerConnection 'scm:git:git@github.com:' + githuborg + '/' + project.archivesBaseName + '.git'
                         }
 
                         issueManagement {
                             system 'github'
-                            url 'https://github.com/' + project.githuborg + '/' + project.archivesBaseName + '/issues'
+                            url 'https://github.com/' + githuborg + '/' + project.archivesBaseName + '/issues'
                         }
 
                         licenses  {
                             license  {
                                 name 'MIT License'
-                                url 'https://raw.github.com/' + project.githuborg + '/' + project.archivesBaseName + '/master/LICENCE.txt'
+                                url 'https://raw.github.com/' + githuborg + '/' + project.archivesBaseName + '/master/LICENCE.txt'
                                 distribution 'repo'
                             }
                         }
