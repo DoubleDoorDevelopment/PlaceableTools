@@ -1,20 +1,19 @@
-{
-  "modinfoversion": 2,
-  "modlist": [{
-    "modid": "PlaceableTools",
-    "name": "PlaceableTools",
+[
+  {
+    "modid": "${modid}",
+    "name": "${modid}",
     "description": "${description}",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "https://github.com/CCM-Modding/PlaceableTools",
-    "authors": [ "Dries007", "Claycorp" ],
+    "url": "https://github.com/${githuborg}/${modid}",
+    "updateUrl": "",
+    "authors": [
+      "Dries007",
+      "Doubledoor team"
+    ],
     "credits": "",
-    "logoFile": "PlaceableTools.png",
-    "requiredMods": [
-        "Forge"
-    ],
-    "dependencies": [
-    ],
-    "useDependencyInformation": "true"
-  }]
-}
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

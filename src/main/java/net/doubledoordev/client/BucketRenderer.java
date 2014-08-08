@@ -48,9 +48,9 @@ import static net.doubledoordev.util.PTConstants.MODID;
 @SideOnly(Side.CLIENT)
 public class BucketRenderer extends TileEntitySpecialRenderer
 {
-    private static final ResourceLocation MODEL_RESOURCE_LOCATION = new ResourceLocation(MODID.toLowerCase(), "/models/bucket.obj");
+    private static final ResourceLocation MODEL_RESOURCE_LOCATION = new ResourceLocation(MODID.toLowerCase(), "models/bucket.obj");
     private static final IModelCustom     BUCKET_MODEL      = AdvancedModelLoader.loadModel(MODEL_RESOURCE_LOCATION);
-    private static final ResourceLocation BUCKET_TEXTURE    = new ResourceLocation(MODID.toLowerCase(), "/textures/bucket.png");
+    private static final ResourceLocation BUCKET_TEXTURE    = new ResourceLocation(MODID.toLowerCase(), "textures/bucket.png");
     private static final Octagon          OCTAGON           = new Octagon(new Point3D(8, 15, 8), 7);
 
     @Override
