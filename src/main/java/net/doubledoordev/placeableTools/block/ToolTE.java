@@ -122,7 +122,7 @@ public class ToolTE extends TileEntity
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
         super.writeToNBT(tag);
-        tag.setTag("stack", getStack().writeToNBT(new NBTTagCompound()));
+        tag.setTag("stack", getStack() == null ? new NBTTagCompound() : getStack().writeToNBT(new NBTTagCompound()));
         tag.setInteger("sign1Facing", sign1Facing);
         tag.setString("sign1Text", TEXT_JOINER.join(sign1Text));
         tag.setInteger("sign2Facing", sign2Facing);

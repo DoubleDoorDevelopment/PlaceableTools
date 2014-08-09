@@ -32,6 +32,7 @@ package net.doubledoordev.placeableTools.block;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.doubledoordev.placeableTools.util.PTConstants;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -62,7 +63,7 @@ public class ToolBlock extends BlockContainer
         super(Material.circuits);
         setHardness(1.5F);
         setResistance(5F);
-        setBlockName("toolblock");
+        setBlockName(PTConstants.MODID + ":toolblock");
         instance = this;
     }
 

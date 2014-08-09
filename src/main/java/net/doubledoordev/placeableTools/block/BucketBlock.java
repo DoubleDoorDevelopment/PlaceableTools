@@ -67,7 +67,7 @@ public class BucketBlock extends BlockContainer
         super(Material.circuits);
         setHardness(1.5F);
         setResistance(5F);
-        setBlockName("bucketblock");
+        setBlockName(PTConstants.MODID + ":bucketblock");
         instance = this;
     }
 
