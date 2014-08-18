@@ -30,14 +30,7 @@
 
 package net.doubledoordev.placeableTools;
 
-import net.doubledoordev.placeableTools.block.BucketBlock;
-import net.doubledoordev.placeableTools.block.BucketTE;
-import net.doubledoordev.placeableTools.block.ToolBlock;
-import net.doubledoordev.placeableTools.block.ToolTE;
-import net.doubledoordev.placeableTools.network.SignMessage;
-import net.doubledoordev.lib.DevPerks;
-import net.doubledoordev.placeableTools.util.EventHandler;
-import net.doubledoordev.placeableTools.util.GuiHandler;
+import cpw.mods.fml.client.config.IConfigElement;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -47,19 +40,27 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import net.doubledoordev.d3core.util.ID3Mod;
+import net.doubledoordev.placeableTools.block.BucketBlock;
+import net.doubledoordev.placeableTools.block.BucketTE;
+import net.doubledoordev.placeableTools.block.ToolBlock;
+import net.doubledoordev.placeableTools.block.ToolTE;
+import net.doubledoordev.placeableTools.network.SignMessage;
+import net.doubledoordev.placeableTools.util.EventHandler;
+import net.doubledoordev.placeableTools.util.GuiHandler;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 import static net.doubledoordev.placeableTools.util.PTConstants.MODID;
 
 @Mod(modid = MODID)
-public class PlaceableTools
+public class PlaceableTools implements ID3Mod
 {
     @Mod.Instance(MODID)
     public static PlaceableTools instance;
@@ -70,7 +71,6 @@ public class PlaceableTools
     private Logger               logger;
     private SimpleNetworkWrapper snw;
     public  Fluid                milk;
-    private boolean              debug;
 
     public static Logger getLogger()
     {
@@ -87,11 +87,6 @@ public class PlaceableTools
     {
         logger = event.getModLog();
         proxy.preInit(event);
-
-        Configuration configuration = new Configuration(event.getSuggestedConfigurationFile());
-        debug = configuration.getBoolean("debug", MODID, debug, "Enable extra debug output.");
-        if (configuration.getBoolean("sillyness", MODID, true, "Disable sillyness only if you want to piss off the developers XD")) MinecraftForge.EVENT_BUS.register(new DevPerks(debug));
-        if (configuration.hasChanged()) configuration.save();
 
         if (!FluidRegistry.isFluidRegistered("milk")) FluidRegistry.registerFluid(milk = new Fluid("milk"));
         FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("milk"), new ItemStack(Items.milk_bucket), new ItemStack(Items.bucket));
@@ -122,5 +117,17 @@ public class PlaceableTools
     public void postInit(FMLPostInitializationEvent event)
     {
         proxy.postInit(event);
+    }
+
+    @Override
+    public void syncConfig()
+    {
+
+    }
+
+    @Override
+    public void addConfigElements(List<IConfigElement> configElements)
+    {
+
     }
 }
