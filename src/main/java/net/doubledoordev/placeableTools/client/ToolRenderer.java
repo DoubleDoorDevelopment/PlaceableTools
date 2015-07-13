@@ -30,9 +30,10 @@
 
 package net.doubledoordev.placeableTools.client;
 
-import net.doubledoordev.placeableTools.block.ToolTE;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.doubledoordev.placeableTools.block.ToolTE;
+import net.doubledoordev.placeableTools.util.ToolClassFinder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelSign;
@@ -40,10 +41,12 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -59,28 +62,186 @@ public class ToolRenderer extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tickTime)
     {
         ToolTE te = (ToolTE) tileentity;
-        if (te.getStack() == null) return;
-
         ItemStack is = te.getStack();
-        doRenderPass(0, te.getBlockMetadata(), is, x, y, z);
+        if (is == null) return;
 
-        if (is.getItem().requiresMultipleRenderPasses())
+        IItemRenderer renderer = MinecraftForgeClient.getItemRenderer(is, IItemRenderer.ItemRenderType.EQUIPPED);
+        if (renderer != null && renderer.handleRenderType(is, IItemRenderer.ItemRenderType.EQUIPPED))
         {
-            for (int i = 1; i < is.getItem().getRenderPasses(is.getItemDamage()); i++)
+            doSpecialRender(renderer, is, x, y, z, te.getBlockMetadata());
+        }
+        else
+        {
+            doRenderPass(0, te.getBlockMetadata(), is, x, y, z);
+
+            if (is.getItem().requiresMultipleRenderPasses())
             {
-                doRenderPass(i, te.getBlockMetadata(), is, x, y, z);
+                for (int i = 1; i < is.getItem().getRenderPasses(is.getItemDamage()); i++)
+                {
+                    doRenderPass(i, te.getBlockMetadata(), is, x, y, z);
+                }
             }
         }
 
-        if (te.getStack().getItem() instanceof ItemSword && te.sign1Facing != -1)
+        if (ToolClassFinder.isSword(is))
         {
-            renderSign(x, y, z, tickTime, te.sign1Facing, te.sign1Text, te.getBlockMetadata());
+            if (te.sign1Facing != -1) renderSign(x, y, z, tickTime, te.sign1Facing, te.sign1Text, te.getBlockMetadata());
+            if (te.sign2Facing != -1) renderSign(x, y, z, tickTime, te.sign2Facing, te.sign2Text, te.getBlockMetadata());
         }
+    }
 
-        if (te.getStack().getItem() instanceof ItemSword && te.sign2Facing != -1)
+    private void doSpecialRender(IItemRenderer renderer, ItemStack stack, double x, double y, double z, int meta)
+    {
+        GL11.glPushMatrix();
+        TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+        texturemanager.bindTexture(texturemanager.getResourceLocation(stack.getItemSpriteNumber()));
+        Tessellator tessellator = Tessellator.instance;
+
+        GL11.glTranslated(x, y, z); //Center to block
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+        GL11.glTranslatef(-0.5f, .5f, 0.5f); // Center on block
+
+        if (ToolClassFinder.isHoe(stack) || ToolClassFinder.isSpade(stack))
         {
-            renderSign(x, y, z, tickTime, te.sign2Facing, te.sign2Text, te.getBlockMetadata());
+            float shift = 0.3f;
+            switch (ForgeDirection.values()[meta])
+            {
+                case NORTH:
+                    GL11.glTranslatef(0, 0, -shift);
+                    GL11.glRotatef(10f, -0.5f, 0, 0);
+                    break;
+                case SOUTH:
+                    GL11.glTranslatef(0, 0, shift);
+                    GL11.glRotatef(-10f, -0.5f, 0, 0);
+                    break;
+                case EAST:
+                    GL11.glRotatef(90f, 0, 1, 0);
+                    GL11.glTranslatef(-1, 0, 1);
+                    GL11.glTranslatef(0, 0, shift);
+                    GL11.glRotatef(-10f, -0.5f, 0, 0);
+                    break;
+                case WEST:
+                    GL11.glRotatef(90f, 0, 1, 0);
+                    GL11.glTranslatef(-1, 0, 1);
+                    GL11.glTranslatef(0, 0, -shift);
+                    GL11.glRotatef(10f, -0.5f, 0, 0);
+                    break;
+                case DOWN:
+                    GL11.glRotatef(90f, 0, 1, 0);
+                    GL11.glTranslatef(-1, 0, 1);
+                    break;
+            }
+            GL11.glTranslatef(0, 0, -0.03f); //Icon depth of the shovel
+            GL11.glRotatef(180f, 1, 0, 0);
         }
+        else if (ToolClassFinder.isAxe(stack) || ToolClassFinder.isPick(stack))
+        {
+            float shift = 0.15f;
+            switch (ForgeDirection.values()[meta])
+            {
+                case NORTH:
+                    GL11.glRotatef(90f, 0, 1, 0);
+                    GL11.glTranslatef(-1, 0, 1);
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-10f, 0, 0, 1);
+                    break;
+                case SOUTH:
+                    GL11.glRotatef(-90f, 0, 1, 0);
+                    GL11.glTranslatef(-1, 0, -1);
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-10f, 0, 0, 1);
+                    break;
+                case EAST:
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-10f, 0, 0, 1);
+                    break;
+                case WEST:
+                    GL11.glRotatef(180f, 0, 1, 0);
+                    GL11.glTranslatef(-2, 0, 0);
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-10f, 0, 0, 1);
+                    break;
+            }
+            GL11.glTranslatef(0, 0, 0.03F);
+        }
+        else if (ToolClassFinder.isSword(stack))
+        {
+            float shift = 0.15f;
+            switch (ForgeDirection.values()[meta])
+            {
+                case NORTH:
+                    GL11.glRotatef(90f, 0, 1, 0);
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-90f, 0, 0, 1);
+                    GL11.glTranslatef(-1, 0, 1);
+                    break;
+                case SOUTH:
+                    GL11.glRotatef(-90f, 0, 1, 0);
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-90f, 0, 0, 1);
+                    GL11.glTranslatef(-1, 0, -1);
+                    break;
+                case EAST:
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-90f, 0, 0, 1);
+                    GL11.glTranslatef(-1, 1, 0);
+                    break;
+                case WEST:
+                    GL11.glRotatef(180f, 0, 1, 0);
+                    GL11.glTranslatef(-1, 1, 0);
+                    GL11.glTranslatef(shift, 0, 0);
+                    GL11.glRotatef(-90f, 0, 0, 1);
+                    break;
+                case UP:
+                    GL11.glRotatef(180f, 1, 0, 0);
+                    GL11.glTranslatef(1, 0, 1);
+                    GL11.glRotatef(90f, 0, 1, 0);
+                    break;
+                case DOWN:
+                    GL11.glRotatef(180f, 1, 0, 0);
+                    break;
+            }
+            GL11.glTranslatef(-0.05f, 0, 0.03F);
+        }
+        GL11.glRotatef(-45f, 0, 0, 1);
+        GL11.glScalef(1.5f, 1.5f, 1.5f);
+        renderer.renderItem(IItemRenderer.ItemRenderType.EQUIPPED, stack);
+        //ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.06F / 1.5f);
+
+//        if (stack.hasEffect(i))
+//        {
+//            GL11.glDepthFunc(GL11.GL_EQUAL);
+//            GL11.glDisable(GL11.GL_LIGHTING);
+//            texturemanager.bindTexture(RES_ITEM_GLINT);
+//            GL11.glEnable(GL11.GL_BLEND);
+//            GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+//            float f7 = 0.76F;
+//            GL11.glColor4f(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
+//            GL11.glMatrixMode(GL11.GL_TEXTURE);
+//            GL11.glPushMatrix();
+//            float f8 = 0.125F;
+//            GL11.glScalef(f8, f8, f8);
+//            float f9 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+//            GL11.glTranslatef(f9, 0.0F, 0.0F);
+//            GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+//            ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.06F / 1.5f);
+//            GL11.glPopMatrix();
+//            GL11.glPushMatrix();
+//            GL11.glScalef(f8, f8, f8);
+//            f9 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
+//            GL11.glTranslatef(-f9, 0.0F, 0.0F);
+//            GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+//            ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.06F / 1.5f);
+//            GL11.glPopMatrix();
+//            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+//            GL11.glDisable(GL11.GL_BLEND);
+//            GL11.glEnable(GL11.GL_LIGHTING);
+//            GL11.glDepthFunc(GL11.GL_LEQUAL);
+//        }
+
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopMatrix();
     }
 
     private void renderSign(double x, double y, double z, float tickTime, int facing, String[] signText, int meta)
@@ -175,7 +336,7 @@ public class ToolRenderer extends TileEntitySpecialRenderer
 
         GL11.glTranslatef(-0.5f, .5f, 0.5f); // Center on block
 
-        if (stack.getItem() instanceof ItemSpade || stack.getItem() instanceof ItemHoe)
+        if (ToolClassFinder.isHoe(stack) || ToolClassFinder.isSpade(stack))
         {
             float shift = 0.3f;
             switch (ForgeDirection.values()[meta])
@@ -208,7 +369,7 @@ public class ToolRenderer extends TileEntitySpecialRenderer
             GL11.glTranslatef(0, 0, -0.03f); //Icon depth of the shovel
             GL11.glRotatef(180f, 1, 0, 0);
         }
-        else if (stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemPickaxe)
+        else if (ToolClassFinder.isAxe(stack) || ToolClassFinder.isPick(stack))
         {
             float shift = 0.15f;
             switch (ForgeDirection.values()[meta])
@@ -238,7 +399,7 @@ public class ToolRenderer extends TileEntitySpecialRenderer
             }
             GL11.glTranslatef(0, 0, 0.03F);
         }
-        else if (stack.getItem() instanceof ItemSword)
+        else if (ToolClassFinder.isSword(stack))
         {
             float shift = 0.15f;
             switch (ForgeDirection.values()[meta])

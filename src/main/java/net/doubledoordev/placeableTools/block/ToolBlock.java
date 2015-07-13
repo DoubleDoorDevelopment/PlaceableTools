@@ -33,6 +33,7 @@ package net.doubledoordev.placeableTools.block;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.doubledoordev.placeableTools.util.PTConstants;
+import net.doubledoordev.placeableTools.util.ToolClassFinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -65,15 +66,6 @@ public class ToolBlock extends BlockContainer
         setResistance(5F);
         setBlockName(PTConstants.MODID + ":toolblock");
         instance = this;
-    }
-
-    public boolean checkMaterial(Material material, Item tool)
-    {
-        if (tool instanceof ItemSpade || tool instanceof ItemHoe) return material == Material.grass || material == Material.ground || material == Material.craftedSnow || material == Material.clay || material == Material.snow || material == Material.sand || material == Material.cloth;
-        else if (tool instanceof ItemAxe || tool instanceof ItemSword)
-            return material == Material.grass || material == Material.ground || material == Material.craftedSnow || material == Material.clay || material == Material.snow || material == Material.sand || material == Material.wood || material == Material.cloth;
-        else if (tool instanceof ItemPickaxe) return true;
-        else return false;
     }
 
     public int getMetaForLean(World world, int x, int y, int z)
@@ -157,8 +149,9 @@ public class ToolBlock extends BlockContainer
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
         ToolTE te = (ToolTE) blockAccess.getTileEntity(x, y, z);
-        if (te.getStack() == null) return;
-        if (te.getStack().getItem() instanceof ItemSpade || te.getStack().getItem() instanceof ItemHoe)
+        ItemStack stack = te.getStack();
+        if (stack == null) return;
+        if (ToolClassFinder.isHoe(stack) || ToolClassFinder.isSpade(stack))
         {
             float height = 1.3f;
             float depth = -0.3f;
@@ -186,7 +179,7 @@ public class ToolBlock extends BlockContainer
                     break;
             }
         }
-        else if (te.getStack().getItem() instanceof ItemAxe)
+        else if (ToolClassFinder.isAxe(stack))
         {
             float height = 0.95f;
             float depth = -0.5f;
@@ -208,7 +201,7 @@ public class ToolBlock extends BlockContainer
                     break;
             }
         }
-        else if (te.getStack().getItem() instanceof ItemPickaxe)
+        else if (ToolClassFinder.isPick(stack))
         {
             float height = 1.05f;
             float depth = -0.55f;
@@ -230,7 +223,7 @@ public class ToolBlock extends BlockContainer
                     break;
             }
         }
-        else if (te.getStack().getItem() instanceof ItemSword)
+        else if (ToolClassFinder.isSword(stack))
         {
             float d1 = 0.03F;
             float d2 = 0.9f;

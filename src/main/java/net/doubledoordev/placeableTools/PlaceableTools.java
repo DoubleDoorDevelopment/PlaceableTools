@@ -31,6 +31,7 @@
 package net.doubledoordev.placeableTools;
 
 import cpw.mods.fml.client.config.IConfigElement;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;

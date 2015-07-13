@@ -33,6 +33,7 @@ package net.doubledoordev.placeableTools.block;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.doubledoordev.placeableTools.util.ToolClassFinder;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
@@ -199,7 +200,7 @@ public class ToolTE extends TileEntity
 
         Material material = worldObj.getBlock(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ).getMaterial();
 
-        if (material == null || stack == null || !ToolBlock.getInstance().checkMaterial(material, stack.getItem())) //We need to pop off
+        if (material == null || stack == null || !ToolClassFinder.checkMaterial(material, stack)) //We need to pop off
         {
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         }

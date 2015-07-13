@@ -82,10 +82,10 @@ public class EventHandler
         }
 
         if (world.isRemote) return;
-        if (event.entityPlayer.isSneaking() && ToolBlock.getInstance().checkMaterial(world.getBlock(event.x, event.y, event.z).getMaterial(), itemStack.getItem()))
+        if (event.entityPlayer.isSneaking() && ToolClassFinder.checkMaterial(world.getBlock(event.x, event.y, event.z).getMaterial(), itemStack))
         {
             int x = event.x, y = event.y, z = event.z;
-            if (event.face == 1 && (itemStack.getItem() instanceof ItemSpade || itemStack.getItem() instanceof ItemHoe))
+            if (event.face == 1 && (ToolClassFinder.isHoe(itemStack) || ToolClassFinder.isSpade(itemStack)))
             {
                 y++; // Cause the shovel gets placed above the block clicked
                 if (world.isAirBlock(x, y, z) && world.getBlock(event.x, event.y, event.z).isSideSolid(world, event.x, event.y, event.z, ForgeDirection.UP))
@@ -95,7 +95,7 @@ public class EventHandler
                     ToolBlock.getInstance().onBlockPlacedBy(world, x, y, z, event.entityPlayer, itemStack);
                 }
             }
-            if (event.face != 1 && event.face != 0 && (itemStack.getItem() instanceof ItemAxe || itemStack.getItem() instanceof ItemPickaxe))
+            if (event.face != 1 && event.face != 0 && (ToolClassFinder.isAxe(itemStack) || ToolClassFinder.isPick(itemStack)))
             {
                 ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[event.face];
                 x += direction.offsetX;
@@ -109,7 +109,7 @@ public class EventHandler
                     ToolBlock.getInstance().onBlockPlacedBy(world, x, y, z, event.entityPlayer, itemStack);
                 }
             }
-            if (itemStack.getItem() instanceof ItemSword)
+            if (ToolClassFinder.isSword(itemStack))
             {
                 ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[event.face];
                 x += direction.offsetX;
@@ -130,18 +130,7 @@ public class EventHandler
             }
         }
 
-        if (event.entityPlayer.isSneaking() && itemStack.getItem() instanceof ItemBucket)
-        {
-            int x = event.x, y = event.y, z = event.z;
-            y++;
-            if (world.isAirBlock(x, y, z) && world.getBlock(event.x, event.y, event.z).isSideSolid(world, event.x, event.y, event.z, ForgeDirection.UP))
-            {
-                event.setCanceled(true);
-                world.setBlock(x, y, z, BucketBlock.getInstance(), 0, 3);
-                BucketBlock.getInstance().onBlockPlacedBy(world, x, y, z, event.entityPlayer, itemStack);
-            }
-        }
-        else if (event.entityPlayer.isSneaking() && itemStack.getItem() instanceof ItemBucketMilk)
+        if (event.entityPlayer.isSneaking() && (itemStack.getItem() instanceof ItemBucket || itemStack.getItem() instanceof ItemBucketMilk))
         {
             int x = event.x, y = event.y, z = event.z;
             y++;

@@ -28,7 +28,7 @@ apply plugin: "maven"
 apply plugin: "idea-utils"
 
 group = "net.doubledoordev.placeableTools"
-version = "1.1.0"
+version = "1.2.0"
 
 targetCompatibility = 1.7
 sourceCompatibility = 1.7
@@ -37,7 +37,7 @@ archivesBaseName = 'PlaceableTools'
 def githuborg = 'DoubleDoorDevelopment'
 def description = 'Place your tools in the world!'
 minecraft {
-    version = "1.7.10-10.13.0.1190"
+    version = "1.7.10-10.13.4.1490-1.7.10"
     runDir = "jars"
 }
 
@@ -45,11 +45,16 @@ repositories {
     maven {
          name "DDD repo"
          url "http://doubledoordev.net/maven/"
-     }
+    }
+//    maven {
+//        name "TConstruct"
+//        url "http://dvs1.progwml6.com/files/maven/"
+//    }
 }
 
 dependencies {
     compile "net.doubledoordev.d3core:D3Core:" + project.minecraft.version + "-+:dev"
+    //compile "tconstruct:TConstruct:" + project.minecraft.version + "-+:deobf"
 }
 
 if (System.getenv().BUILD_NUMBER != null) version += "." + System.getenv().BUILD_NUMBER
