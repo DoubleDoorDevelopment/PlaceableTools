@@ -1,5 +1,6 @@
 package net.doubledoordev.placeableTools.util;
 
+import net.doubledoordev.placeableTools.PlaceableTools;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.*;
 
@@ -35,6 +36,6 @@ public class ToolClassFinder
 
     public static boolean checkMaterial(Material material, ItemStack stack)
     {
-        return !(material.isLiquid() || material.isReplaceable()) && (material.isToolNotRequired() || ToolClassFinder.isPick(stack));
+        return !PlaceableTools.checkMaterial || !(material.isLiquid() || material.isReplaceable()) && (material.isToolNotRequired() || ToolClassFinder.isPick(stack));
     }
 }

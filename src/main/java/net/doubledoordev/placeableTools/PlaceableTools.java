@@ -51,6 +51,8 @@ import net.doubledoordev.placeableTools.util.EventHandler;
 import net.doubledoordev.placeableTools.util.GuiHandler;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -69,9 +71,11 @@ public class PlaceableTools implements ID3Mod
     @SidedProxy(serverSide = "net.doubledoordev.placeableTools.CommonProxy", clientSide = "net.doubledoordev.placeableTools.client.ClientProxy")
     public static CommonProxy proxy;
 
+    private Configuration        configuration;
     private Logger               logger;
     private SimpleNetworkWrapper snw;
     public  Fluid                milk;
+    public static boolean        checkMaterial = true;
 
     public static Logger getLogger()
     {
@@ -86,6 +90,9 @@ public class PlaceableTools implements ID3Mod
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        configuration = new Configuration(event.getSuggestedConfigurationFile());
+        syncConfig();
+
         logger = event.getModLog();
         proxy.preInit(event);
 
@@ -123,12 +130,16 @@ public class PlaceableTools implements ID3Mod
     @Override
     public void syncConfig()
     {
+        configuration.setCategoryLanguageKey(MODID, "d3.placeableTools.config.placeableTools");
 
+        checkMaterial = configuration.getBoolean("checkMaterial", MODID, checkMaterial, "Check the material when placing the tool. aka axe can go into wood but not stone...", "d3.placeableTools.config.checkMaterial");
+
+        if (configuration.hasChanged()) configuration.save();
     }
 
     @Override
     public void addConfigElements(List<IConfigElement> configElements)
     {
-
+        configElements.add(new ConfigElement(configuration.getCategory(MODID.toLowerCase())));
     }
 }

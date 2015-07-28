@@ -1,2 +1,5 @@
 tile.PlaceableTools:toolblock.name=Tool Block
 tile.PlaceableTools:bucketblock.name=Bucket Block
+
+d3.placeableTools.config.placeableTools=Placeable Tools options
+d3.placeableTools.config.checkMaterial=Check the material when placing the tool. aka axe can go into wood but not stone...
