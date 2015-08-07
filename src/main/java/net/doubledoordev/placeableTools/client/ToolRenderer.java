@@ -41,6 +41,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -57,6 +58,7 @@ public class ToolRenderer extends TileEntitySpecialRenderer
     public static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
     public static final ResourceLocation SIGN_TEXTURE   = new ResourceLocation("textures/entity/sign.png");
     public static final ModelSign        MODEL_SIGN     = new ModelSign();
+    public static final EntityLiving     ENTITY_LIVING  = new EntityLiving(null) {};
 
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tickTime)
@@ -95,7 +97,6 @@ public class ToolRenderer extends TileEntitySpecialRenderer
         GL11.glPushMatrix();
         TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
         texturemanager.bindTexture(texturemanager.getResourceLocation(stack.getItemSpriteNumber()));
-        Tessellator tessellator = Tessellator.instance;
 
         GL11.glTranslated(x, y, z); //Center to block
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -206,39 +207,16 @@ public class ToolRenderer extends TileEntitySpecialRenderer
         }
         GL11.glRotatef(-45f, 0, 0, 1);
         GL11.glScalef(1.5f, 1.5f, 1.5f);
-        renderer.renderItem(IItemRenderer.ItemRenderType.EQUIPPED, stack);
-        //ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.06F / 1.5f);
 
-//        if (stack.hasEffect(i))
-//        {
-//            GL11.glDepthFunc(GL11.GL_EQUAL);
-//            GL11.glDisable(GL11.GL_LIGHTING);
-//            texturemanager.bindTexture(RES_ITEM_GLINT);
-//            GL11.glEnable(GL11.GL_BLEND);
-//            GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-//            float f7 = 0.76F;
-//            GL11.glColor4f(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
-//            GL11.glMatrixMode(GL11.GL_TEXTURE);
-//            GL11.glPushMatrix();
-//            float f8 = 0.125F;
-//            GL11.glScalef(f8, f8, f8);
-//            float f9 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
-//            GL11.glTranslatef(f9, 0.0F, 0.0F);
-//            GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
-//            ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.06F / 1.5f);
-//            GL11.glPopMatrix();
-//            GL11.glPushMatrix();
-//            GL11.glScalef(f8, f8, f8);
-//            f9 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
-//            GL11.glTranslatef(-f9, 0.0F, 0.0F);
-//            GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
-//            ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.06F / 1.5f);
-//            GL11.glPopMatrix();
-//            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-//            GL11.glDisable(GL11.GL_BLEND);
-//            GL11.glEnable(GL11.GL_LIGHTING);
-//            GL11.glDepthFunc(GL11.GL_LEQUAL);
-//        }
+        try
+        {
+            renderer.renderItem(IItemRenderer.ItemRenderType.EQUIPPED, stack, ENTITY_LIVING);
+        }
+        catch (Exception e)
+        {
+            IIcon icon = stack.getIconIndex();
+            ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.06F / 1.5f);
+        }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
