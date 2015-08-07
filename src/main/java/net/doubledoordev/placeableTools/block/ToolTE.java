@@ -196,7 +196,7 @@ public class ToolTE extends TileEntity
         int meta = getBlockMetadata();
         ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[meta];
 
-        if (stack.getItem() instanceof ItemSpade || stack.getItem() instanceof ItemHoe) direction = ForgeDirection.DOWN;
+        if (ToolClassFinder.isSpade(stack) || ToolClassFinder.isHoe(stack)) direction = ForgeDirection.DOWN;
 
         Material material = worldObj.getBlock(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ).getMaterial();
 
