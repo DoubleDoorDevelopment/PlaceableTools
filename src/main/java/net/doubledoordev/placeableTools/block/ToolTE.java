@@ -144,7 +144,7 @@ public class ToolTE extends TileEntity
     public Packet getDescriptionPacket()
     {
         NBTTagCompound root = new NBTTagCompound();
-        root.setTag("stack", getStack().writeToNBT(new NBTTagCompound()));
+        root.setTag("stack", getStack() == null ? new NBTTagCompound() : getStack().writeToNBT(new NBTTagCompound()));
         root.setInteger("sign1Facing", sign1Facing);
         root.setString("sign1Text", TEXT_JOINER.join(sign1Text));
         root.setInteger("sign2Facing", sign2Facing);
