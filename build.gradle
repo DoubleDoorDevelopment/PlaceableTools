@@ -42,10 +42,13 @@ minecraft {
 }
 
 repositories {
-    maven {
+    flatDir {
+       dirs 'libs'
+    }
+    /*maven {
          name "DDD repo"
          url "http://doubledoordev.net/maven/"
-    }
+    }*/
 //    maven {
 //        name "TConstruct"
 //        url "http://dvs1.progwml6.com/files/maven/"
